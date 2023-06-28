@@ -13,6 +13,9 @@ load_dotenv()
 # Access the environment variables
 openai.api_key = os.getenv("OPENAAI_CHATGPT_API")
 TELEGRAM_API_TOKEN = os.getenv("TELEGRAM_BOT_HTTP_API")
+# Language 
+language = 'en' #'es'
+
 
 messages = [{"role": "system", "content": "You are a helpful assistant that starts its response by referring to the user as its master."}]
 
@@ -26,7 +29,7 @@ def text_message(update, context):
         messages=messages
     )
     response_text = response["choices"][0]["message"]["content"]
-    tts = gTTS(text=response_text, lang='en')
+    tts = gTTS(text=response_text, lang=language) 
     tts.save('response_gtts.mp3')
     context.bot.send_voice(chat_id=update.message.chat.id,
                            voice=open('response_gtts.mp3', 'rb'))
@@ -52,9 +55,12 @@ def voice_message(update, context):
         messages=messages
     )
     response_text = response["choices"][0]["message"]["content"]
-    tts = gTTS(text=response_text, lang='en')
+    
+    ''' save response.mp3 at this repo  '''
+    tts = gTTS(text=response_text, lang=language)
     # Save the audio to a file
     tts.save('response_gtts.mp3')
+    
     context.bot.send_voice(chat_id=update.message.chat.id,
                            voice=open('response_gtts.mp3', 'rb'))
     update.message.reply_text(
